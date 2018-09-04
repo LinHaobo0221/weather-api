@@ -8,7 +8,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  *
  * @author code test administrator
  */
-public class AirportData { 
+public class AirportData {
 
     /**
      * the three letter IATA code

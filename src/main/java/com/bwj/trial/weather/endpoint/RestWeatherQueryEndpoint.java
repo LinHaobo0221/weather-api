@@ -4,7 +4,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.bwj.trial.weather.model.AtmosphericInformation;
@@ -42,6 +46,8 @@ public class RestWeatherQueryEndpoint implements WeatherQueryEndpoint {
      *
      * @return health stats for the service as a string
      */
+    @GET
+    @Path("/ping")
     @Override
     public String ping() {
 
@@ -59,8 +65,11 @@ public class RestWeatherQueryEndpoint implements WeatherQueryEndpoint {
      * @param radiusString the radius in km
      * @return a list of atmospheric information
      */
+    @GET
+    @Path("/weather/{iata}/{radius}")
+    @Produces(MediaType.APPLICATION_JSON)
     @Override
-    public Response weather(String iata, String radiusString) {
+    public Response weather(@PathParam("iata") String iata, @PathParam("radius") String radiusString) {
 
         List<AtmosphericInformation> retval = weatherService.getWetherList(iata, radiusString);
 

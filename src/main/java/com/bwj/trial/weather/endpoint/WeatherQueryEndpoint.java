@@ -21,8 +21,6 @@ public interface WeatherQueryEndpoint {
      *
      * @return a JSON formatted dict with health information.
      */
-    @GET
-    @Path("/ping")
     String ping();
 
     /**
@@ -34,8 +32,5 @@ public interface WeatherQueryEndpoint {
      * @return an HTTP Response and a list of {@link AtmosphericInformation} from the requested airport and
      * airports in the given radius
      */
-    @GET
-    @Path("/weather/{iata}/{radius}")
-    @Produces(MediaType.APPLICATION_JSON)
-    Response weather(@PathParam("iata") String iata, @PathParam("radius") String radiusString);
+    Response weather(String iata, String radiusString);
 }

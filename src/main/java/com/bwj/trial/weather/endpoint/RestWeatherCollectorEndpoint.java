@@ -3,8 +3,8 @@ package com.bwj.trial.weather.endpoint;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.bwj.trial.weather.WeatherException;
@@ -37,11 +37,15 @@ public class RestWeatherCollectorEndpoint implements WeatherCollectorEndpoint {
         this.weatherService = weatherService;
     }
 
+    @GET
+    @Path("/ping")
     @Override
     public Response ping() {
         return Response.status(Response.Status.OK).entity("ready").build();
     }
 
+    @POST
+    @Path("/weather/{iata}/{pointType}")
     @Override
     public Response updateWeather(@PathParam("iata") String iataCode, @PathParam("pointType") String pointType,
                                   String datapointJson) {
@@ -58,6 +62,9 @@ public class RestWeatherCollectorEndpoint implements WeatherCollectorEndpoint {
         return Response.status(Response.Status.OK).build();
     }
 
+    @GET
+    @Path("/airports")
+    @Produces(MediaType.APPLICATION_JSON)
     @Override
     public Response getAirports() {
 
@@ -66,6 +73,9 @@ public class RestWeatherCollectorEndpoint implements WeatherCollectorEndpoint {
         return Response.status(Response.Status.OK).entity(result).build();
     }
 
+    @GET
+    @Path("/airport/{iata}")
+    @Produces(MediaType.APPLICATION_JSON)
     @Override
     public Response getAirport(@PathParam("iata") String iata) {
 
@@ -74,6 +84,8 @@ public class RestWeatherCollectorEndpoint implements WeatherCollectorEndpoint {
         return Response.status(Response.Status.OK).entity(ad).build();
     }
 
+    @POST
+    @Path("/airport/{iata}/{lat}/{long}")
     @Override
     public Response addAirport(@PathParam("iata") String iata, @PathParam("lat") String latString, @PathParam("long") String longString) {
 
@@ -89,6 +101,8 @@ public class RestWeatherCollectorEndpoint implements WeatherCollectorEndpoint {
         return Response.status(Response.Status.BAD_REQUEST).build();
     }
 
+    @DELETE
+    @Path("/airport/{iata}")
     @Override
     public Response deleteAirport(@PathParam("iata") String iata) {
 
@@ -104,6 +118,8 @@ public class RestWeatherCollectorEndpoint implements WeatherCollectorEndpoint {
         return Response.status(Response.Status.NOT_IMPLEMENTED).build();
     }
 
+    @GET
+    @Path("/exit")
     @Override
     public Response exit() {
         System.exit(0);
