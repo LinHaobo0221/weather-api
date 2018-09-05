@@ -15,7 +15,7 @@ public enum MemoryOperator {
     /**
      * all known airports
      */
-    private final List<AirportData> airportData = Collections.synchronizedList(new ArrayList<>());
+    private volatile List<AirportData> airportData = Collections.synchronizedList(new ArrayList<>());
 
     /**
      * atmospheric information for each airport, idx corresponds with airportData
@@ -33,10 +33,8 @@ public enum MemoryOperator {
 
     private ConcurrentHashMap<Double, Integer> radiusFreq = new ConcurrentHashMap<>();
 
-    public List<AirportData> getAirportData() {
-        synchronized (airportData) {
-            return airportData;
-        }
+    public synchronized List<AirportData> getAirportData() {
+        return airportData;
     }
 
     public ConcurrentHashMap<String, AtmosphericInformation> getAtmosphericInformation() {

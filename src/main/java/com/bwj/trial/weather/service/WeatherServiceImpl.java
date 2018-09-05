@@ -26,7 +26,7 @@ public class WeatherServiceImpl implements WeatherService {
     }
 
     @Override
-    public synchronized Map<String, Object> getPingResult() {
+    public Map<String, Object> getPingResult() {
 
         Map<String, Object> result = new HashMap<>();
 
@@ -72,7 +72,7 @@ public class WeatherServiceImpl implements WeatherService {
     }
 
     @Override
-    public synchronized List<AtmosphericInformation> getWetherList(String iata, String radiusParam) {
+    public List<AtmosphericInformation> getWetherList(String iata, String radiusParam) {
 
         double radius = radiusParam == null || radiusParam.trim().isEmpty() ? 0
                 : new BigDecimal(radiusParam).doubleValue();

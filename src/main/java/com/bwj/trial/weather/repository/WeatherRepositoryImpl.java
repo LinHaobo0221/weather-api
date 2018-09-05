@@ -71,10 +71,8 @@ public class WeatherRepositoryImpl implements WeatherRepository {
     }
 
     @Override
-    public void addAirport(AirportData airportData) {
-        synchronized (MemoryOperator.INSTANCE.getAirportData()) {
-            MemoryOperator.INSTANCE.getAirportData().add(airportData);
-        }
+    public synchronized void addAirport(AirportData airportData) {
+        MemoryOperator.INSTANCE.getAirportData().add(airportData);
     }
 
     @Override
