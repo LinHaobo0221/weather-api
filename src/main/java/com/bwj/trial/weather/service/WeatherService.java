@@ -45,7 +45,7 @@ public interface WeatherService {
      * @throws WeatherException
      *             if the update can not be completed
      */
-    void addDataPoint(String iataCode, String pointType, DataPoint dp) throws WeatherException;
+    boolean addDataPoint(String iataCode, String pointType, DataPoint dp) throws WeatherException;
 
     /**
      * Retrieve airport data, including latitude and longitude for a particular
@@ -78,7 +78,7 @@ public interface WeatherService {
      *            the airport's longitude in degrees
      * @return newly added airport data
      */
-    AirportData addAirport(String iataCode, String latitude, String longitude);
+    boolean addAirport(String iataCode, String latitude, String longitude);
 
     /**
      * Remove an airport from the known airport list

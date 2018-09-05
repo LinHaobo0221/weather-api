@@ -116,11 +116,11 @@ public class WeatherServiceImpl implements WeatherService {
     }
 
     @Override
-    public void addDataPoint(String iataCode, String pointType, DataPoint dp) throws WeatherException {
+    public boolean addDataPoint(String iataCode, String pointType, DataPoint dp) throws WeatherException {
 
         AtmosphericInformation ai = weatherRepos.getAtmosphericInformation(iataCode);
 
-        weatherRepos.updateAtmosphericInformation(ai, pointType, dp);
+        return weatherRepos.updateAtmosphericInformation(ai, pointType, dp);
 
     }
 
@@ -141,10 +141,10 @@ public class WeatherServiceImpl implements WeatherService {
     }
 
     @Override
-    public AirportData addAirport(String iataCode, String latitude, String longitude) {
+    public boolean addAirport(String iataCode, String latitude, String longitude) {
 
         if (weatherRepos.getAirportData(iataCode) != null) {
-            return null;
+            return false;
         }
 
         AirportData airport = new AirportData(iataCode, new BigDecimal(latitude), new BigDecimal(longitude));
@@ -153,7 +153,7 @@ public class WeatherServiceImpl implements WeatherService {
         AtmosphericInformation ai = new AtmosphericInformation();
         weatherRepos.addAtmosphericInformation(iataCode, ai);
 
-        return airport;
+        return true;
     }
 
     @Override

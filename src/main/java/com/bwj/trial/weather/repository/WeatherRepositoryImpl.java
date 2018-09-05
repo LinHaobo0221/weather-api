@@ -14,7 +14,7 @@ public class WeatherRepositoryImpl implements WeatherRepository {
     public AirportData getAirportData(String iataCode) {
         synchronized (MemoryOperator.INSTANCE.getAirportData()) {
             return MemoryOperator.INSTANCE.getAirportData().parallelStream().filter(ap -> ap.getIata().equals(iataCode))
-                   .findFirst().orElse(null);
+                    .findFirst().orElse(null);
         }
     }
 
@@ -55,41 +55,19 @@ public class WeatherRepositoryImpl implements WeatherRepository {
     }
 
     @Override
-    public void updateAtmosphericInformation(AtmosphericInformation ai, String pointType, DataPoint dp) {
+    public boolean updateAtmosphericInformation(AtmosphericInformation ai, String pointType, DataPoint dp) {
 
-        DataPointType dataPointType = DataPointType.valueOf(pointType.toUpperCase());
-        switch (dataPointType) {
-        case WIND:
-            if (dp.getMean() >= 0) {
-                ai.setWind(dp);
-            }
-            break;
-        case TEMPERATURE:
-            if (dp.getMean() >= -50 && dp.getMean() < 100) {
-                ai.setTemperature(dp);
-            }
-            break;
-        case HUMIDTY:
-            if (dp.getMean() >= 0 && dp.getMean() < 100) {
-                ai.setHumidity(dp);
-            }
-            break;
-        case PRESSURE:
-            if (dp.getMean() >= 650 && dp.getMean() < 800) {
-                ai.setPressure(dp);
-            }
-            break;
-        case CLOUDCOVER:
-            if (dp.getMean() >= 0 && dp.getMean() < 100) {
-                ai.setCloudCover(dp);
-            }
-            break;
-        case PRECIPITATION:
-            if (dp.getMean() >= 0 && dp.getMean() < 100) {
-                ai.setPrecipitation(dp);
-            }
-            break;
+        DataPointType filterDataPointType = DataPointType.getAllDataPointTypes().parallelStream()
+                .filter(dataPointType -> dataPointType.getValue().equalsIgnoreCase(pointType)).findFirst().orElse(null);
+
+        if (filterDataPointType == null) {
+            return false;
         }
+
+        filterDataPointType.updateAtmosphericInformation(ai, dp);
+
+        return true;
+
     }
 
     @Override

@@ -12,6 +12,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import com.bwj.trial.weather.WeatherException;
 import com.bwj.trial.weather.model.AirportData;
@@ -61,11 +62,15 @@ public class RestWeatherCollectorEndpoint implements WeatherCollectorEndpoint {
                 return Response.status(Response.Status.BAD_REQUEST).build();
             }
 
-            weatherService.addDataPoint(iataCode, pointType, gson.fromJson(datapointJson, DataPoint.class));
+            boolean result = weatherService.addDataPoint(iataCode, pointType,gson.fromJson(datapointJson, DataPoint.class));
+            if (!result) {
+                return Response.status(Response.Status.BAD_REQUEST).build();
+            }
 
         } catch (WeatherException e) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
+        
         return Response.status(Response.Status.OK).build();
     }
 
@@ -101,11 +106,11 @@ public class RestWeatherCollectorEndpoint implements WeatherCollectorEndpoint {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
-        AirportData airportData = weatherService.addAirport(iata, latString, longString);
-        if (airportData == null) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
-        }
-        return Response.status(Response.Status.OK).build();
+        boolean result = weatherService.addAirport(iata, latString, longString);
+        
+        Status status = result ? Response.Status.OK : Response.Status.BAD_REQUEST;
+        
+        return Response.status(status).build();
 
     }
 
@@ -119,11 +124,10 @@ public class RestWeatherCollectorEndpoint implements WeatherCollectorEndpoint {
         }
 
         boolean result = weatherService.deleteAirport(iata);
-        if (!result) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
-        }
-
-        return Response.status(Response.Status.NOT_IMPLEMENTED).build();
+        
+        Status status = result ? Response.Status.OK : Response.Status.BAD_REQUEST;
+        
+        return Response.status(status).build();
     }
 
     @GET

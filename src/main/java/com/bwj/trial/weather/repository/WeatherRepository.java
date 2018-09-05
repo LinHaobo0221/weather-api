@@ -20,10 +20,10 @@ public interface WeatherRepository {
     Map<Double, Integer> getRadiusFreq();
 
     AirportData getAirportData(String iataCode);
+    
+    boolean updateAtmosphericInformation(AtmosphericInformation ai, String pointType, DataPoint dp);
 
     void updateRequestFrequency(String iata, Double radius);
-
-    void updateAtmosphericInformation(AtmosphericInformation ai, String pointType, DataPoint dp);
 
     void addAirport(AirportData airportData);
 
