@@ -15,7 +15,7 @@ public enum MemoryOperator {
     /**
      * all known airports
      */
-    private List<AirportData> airportData = Collections.synchronizedList(new ArrayList<>());
+    private final List<AirportData> airportData = Collections.synchronizedList(new ArrayList<>());
 
     /**
      * atmospheric information for each airport, idx corresponds with airportData
