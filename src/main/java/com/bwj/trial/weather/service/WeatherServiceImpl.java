@@ -52,12 +52,13 @@ public class WeatherServiceImpl implements WeatherService {
         if (total == 0) {
             result.put("iata_freq", freqMap);
         } else {
-
             List<AirportData> dataList = weatherRepos.getAirportDataList();
+            
             synchronized (dataList) {
                 for (AirportData airportData : dataList) {
-
-                    double freq = (double) weatherRepos.getRequestFrequency().getOrDefault(airportData, 0) / total;
+                    
+                    int index = weatherRepos.getRequestFrequency().getOrDefault(airportData, 0);
+                    double freq = new BigDecimal(index).subtract(new BigDecimal(total)).doubleValue();
 
                     freqMap.put(airportData.getIata(), freq);
                 }
@@ -102,8 +103,7 @@ public class WeatherServiceImpl implements WeatherService {
 
                     if (this.calculateDistance(ad, airportData) <= radius) {
 
-                        AtmosphericInformation atmosphericInformation = weatherRepos
-                                .getAtmosphericInformation(airportData.getIata());
+                        AtmosphericInformation atmosphericInformation = weatherRepos.getAtmosphericInformation(airportData.getIata());
 
                         if (atmosphericInformation.isValidate()) {
                             result.add(atmosphericInformation);
