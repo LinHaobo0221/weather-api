@@ -1,5 +1,6 @@
 package com.bwj.trial.weather.service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -74,7 +75,7 @@ public class WeatherServiceImpl implements WeatherService {
     @Override
     public List<AtmosphericInformation> getWetherList(String iata, String radiusParam) {
 
-        double radius = radiusParam == null || radiusParam.trim().isEmpty() ? 0 : Double.valueOf(radiusParam);
+        double radius = radiusParam == null || radiusParam.trim().isEmpty() ? 0 : new BigDecimal(radiusParam).doubleValue();
 
         weatherRepos.updateRequestFrequency(iata, radius);
 
@@ -124,20 +125,13 @@ public class WeatherServiceImpl implements WeatherService {
     }
 
     @Override
-    public AirportData addAirport(String iataCode, double latitude, double longitude) {
+    public AirportData addAirport(String iataCode, String latitude, String longitude) {
 
-        if (weatherRepos.getAirportData(iataCode) == null) {
+        if (weatherRepos.getAirportData(iataCode) != null) {
             return null;
         }
 
-        long existCount = weatherRepos.getAirportDataList().parallelStream()
-                .filter(airport -> airport.getIata().equals(iataCode)).count();
-
-        if (existCount > 0) {
-            return null;
-        }
-
-        AirportData airport = new AirportData(iataCode, latitude, longitude);
+        AirportData airport = new AirportData(iataCode, new BigDecimal(latitude), new BigDecimal(longitude));
         weatherRepos.addAirport(airport);
 
         AtmosphericInformation ai = new AtmosphericInformation();
@@ -161,11 +155,11 @@ public class WeatherServiceImpl implements WeatherService {
 
     private double calculateDistance(AirportData dataOne, AirportData dataTwo) {
 
-        double deltaLat = Math.toRadians(dataTwo.getLatitude() - dataOne.getLatitude());
-        double deltaLon = Math.toRadians(dataTwo.getLongitude() - dataOne.getLongitude());
+        double deltaLat = Math.toRadians(dataTwo.getLatitude().subtract(dataOne.getLatitude()).doubleValue());
+        double deltaLon = Math.toRadians(dataTwo.getLongitude().subtract(dataOne.getLongitude()).doubleValue());
 
         double a = Math.pow(Math.sin(deltaLat / 2), 2) + Math.pow(Math.sin(deltaLon / 2), 2)
-                * Math.cos(dataOne.getLatitude()) * Math.cos(dataTwo.getLatitude());
+                * Math.cos(dataOne.getLatitude().doubleValue()) * Math.cos(dataTwo.getLatitude().doubleValue());
 
         double c = 2 * Math.asin(Math.sqrt(a));
 

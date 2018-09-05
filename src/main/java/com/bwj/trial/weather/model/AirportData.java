@@ -1,5 +1,7 @@
 package com.bwj.trial.weather.model;
 
+import java.math.BigDecimal;
+
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -18,14 +20,14 @@ public class AirportData {
     /**
      * latitude value in degrees
      */
-    private final double latitude;
+    private final BigDecimal latitude;
 
     /**
      * longitude value in degrees
      */
-    private final double longitude;
+    private final BigDecimal longitude;
 
-    public AirportData(String iata, double latitude, double longitude) {
+    public AirportData(String iata, BigDecimal latitude, BigDecimal longitude) {
         super();
         this.iata = iata;
         this.latitude = latitude;
@@ -36,11 +38,11 @@ public class AirportData {
         return iata;
     }
 
-    public double getLatitude() {
+    public BigDecimal getLatitude() {
         return latitude;
     }
 
-    public double getLongitude() {
+    public BigDecimal getLongitude() {
         return longitude;
     }
 

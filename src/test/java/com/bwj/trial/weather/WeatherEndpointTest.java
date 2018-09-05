@@ -2,6 +2,7 @@ package com.bwj.trial.weather;
 
 import static org.junit.Assert.assertEquals;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.junit.Before;
@@ -46,11 +47,11 @@ public class WeatherEndpointTest {
 		MemoryOperator.INSTANCE.getAtmosphericInformation().clear();
 
 		MemoryOperator.INSTANCE.getAirportData()
-				.add(new AirportData("BOS", 42.364347, -71.005181));
+				.add(new AirportData("BOS", new BigDecimal(42.364347), new BigDecimal(-71.005181)));
 		MemoryOperator.INSTANCE.getAirportData()
-				.add(new AirportData("EWR", 40.6925, -71.005181));
+				.add(new AirportData("EWR", new BigDecimal(40.6925), new BigDecimal(-71.005181)));
 		MemoryOperator.INSTANCE.getAirportData()
-				.add(new AirportData("JFK", 40.639751, -73.778925));
+				.add(new AirportData("JFK", new BigDecimal(40.639751), new BigDecimal(-73.778925)));
 
 		MemoryOperator.INSTANCE.getAtmosphericInformation().put("BOS", new AtmosphericInformation());
 		MemoryOperator.INSTANCE.getAtmosphericInformation().put("EWR", new AtmosphericInformation());

@@ -101,13 +101,12 @@ public class RestWeatherCollectorEndpoint implements WeatherCollectorEndpoint {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
-        AirportData airportData = weatherService.addAirport(iata, Double.valueOf(latString),
-                Double.valueOf(longString));
+        AirportData airportData = weatherService.addAirport(iata, latString, longString);
         if (airportData == null) {
-            return Response.status(Response.Status.OK).build();
+            return Response.status(Response.Status.BAD_REQUEST).build();
         }
+        return Response.status(Response.Status.OK).build();
 
-        return Response.status(Response.Status.BAD_REQUEST).build();
     }
 
     @DELETE

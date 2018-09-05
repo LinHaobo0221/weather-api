@@ -78,7 +78,7 @@ public interface WeatherService {
      *            the airport's longitude in degrees
      * @return newly added airport data
      */
-    AirportData addAirport(String iataCode, double latitude, double longitude);
+    AirportData addAirport(String iataCode, String latitude, String longitude);
 
     /**
      * Remove an airport from the known airport list
