@@ -34,7 +34,9 @@ public enum MemoryOperator {
     private ConcurrentHashMap<Double, Integer> radiusFreq = new ConcurrentHashMap<Double, Integer>();
 
     public List<AirportData> getAirportData() {
-        return airportData;
+        synchronized (airportData) {
+            return airportData;
+        }
     }
 
     public ConcurrentHashMap<String, AtmosphericInformation> getAtmosphericInformation() {
