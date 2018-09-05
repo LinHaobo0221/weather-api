@@ -1,9 +1,9 @@
 package com.bwj.trial.weather.repository;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.bwj.trial.weather.model.AirportData;
 import com.bwj.trial.weather.model.AtmosphericInformation;
@@ -15,12 +15,12 @@ public enum MemoryOperator {
     /**
      * all known airports
      */
-    private List<AirportData> airportData = new ArrayList<>();
+    private List<AirportData> airportData = Collections.synchronizedList(new ArrayList<>());
 
     /**
      * atmospheric information for each airport, idx corresponds with airportData
      */
-    private Map<String, AtmosphericInformation> atmosphericInformation = new HashMap<String, AtmosphericInformation>();
+    private ConcurrentHashMap<String, AtmosphericInformation> atmosphericInformation = new ConcurrentHashMap<String, AtmosphericInformation>();
 
     /**
      * Internal performance counter to better understand most requested information,
@@ -29,23 +29,23 @@ public enum MemoryOperator {
      * don't want to write this to disk, but will pull it off using a REST request
      * and aggregate with other performance metrics {@link #ping()}
      */
-    private Map<AirportData, Integer> requestFrequency = new HashMap<AirportData, Integer>();
+    private ConcurrentHashMap<AirportData, Integer> requestFrequency = new ConcurrentHashMap<AirportData, Integer>();
 
-    private Map<Double, Integer> radiusFreq = new HashMap<Double, Integer>();
+    private ConcurrentHashMap<Double, Integer> radiusFreq = new ConcurrentHashMap<Double, Integer>();
 
     public List<AirportData> getAirportData() {
         return airportData;
     }
 
-    public Map<String, AtmosphericInformation> getAtmosphericInformation() {
+    public ConcurrentHashMap<String, AtmosphericInformation> getAtmosphericInformation() {
         return atmosphericInformation;
     }
 
-    public Map<AirportData, Integer> getRequestFrequency() {
+    public ConcurrentHashMap<AirportData, Integer> getRequestFrequency() {
         return requestFrequency;
     }
 
-    public Map<Double, Integer> getRadiusFreq() {
+    public ConcurrentHashMap<Double, Integer> getRadiusFreq() {
         return radiusFreq;
     }
 

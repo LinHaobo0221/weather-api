@@ -49,15 +49,21 @@ public class WeatherServiceImpl implements WeatherService {
         Map<String, Double> freqMap = new HashMap<>();
 
         int total = weatherRepos.getRequestFrequency().size();
+        if (total == 0) {
+            result.put("iata_freq", freqMap);
+        } else {
 
-        for (AirportData airportData : weatherRepos.getAirportDataList()) {
+            List<AirportData> dataList = weatherRepos.getAirportDataList();
+            synchronized (dataList) {
+                for (AirportData airportData : dataList) {
 
-            double freq = (double) weatherRepos.getRequestFrequency().getOrDefault(airportData, 0) / total;
+                    double freq = (double) weatherRepos.getRequestFrequency().getOrDefault(airportData, 0) / total;
 
-            freqMap.put(airportData.getIata(), freq);
+                    freqMap.put(airportData.getIata(), freq);
+                }
+            }
+            result.put("iata_freq", freqMap);
         }
-
-        result.put("iata_freq", freqMap);
 
         int size = weatherRepos.getRadiusFreq().keySet().stream().max(Double::compare).orElse(1000.0).intValue() + 1;
 
@@ -75,7 +81,8 @@ public class WeatherServiceImpl implements WeatherService {
     @Override
     public List<AtmosphericInformation> getWetherList(String iata, String radiusParam) {
 
-        double radius = radiusParam == null || radiusParam.trim().isEmpty() ? 0 : new BigDecimal(radiusParam).doubleValue();
+        double radius = radiusParam == null || radiusParam.trim().isEmpty() ? 0
+                : new BigDecimal(radiusParam).doubleValue();
 
         weatherRepos.updateRequestFrequency(iata, radius);
 
@@ -89,15 +96,18 @@ public class WeatherServiceImpl implements WeatherService {
             AirportData ad = weatherRepos.getAirportData(iata);
 
             List<AirportData> airportDataList = weatherRepos.getAirportDataList();
-            for (AirportData airportData : airportDataList) {
 
-                if (this.calculateDistance(ad, airportData) <= radius) {
+            synchronized (airportDataList) {
+                for (AirportData airportData : airportDataList) {
 
-                    AtmosphericInformation atmosphericInformation = weatherRepos
-                            .getAtmosphericInformation(airportData.getIata());
+                    if (this.calculateDistance(ad, airportData) <= radius) {
 
-                    if (atmosphericInformation.isValidate()) {
-                        result.add(atmosphericInformation);
+                        AtmosphericInformation atmosphericInformation = weatherRepos
+                                .getAtmosphericInformation(airportData.getIata());
+
+                        if (atmosphericInformation.isValidate()) {
+                            result.add(atmosphericInformation);
+                        }
                     }
                 }
             }
@@ -116,7 +126,13 @@ public class WeatherServiceImpl implements WeatherService {
 
     @Override
     public Set<String> getIataCodes() {
-        return weatherRepos.getAirportDataList().parallelStream().map(AirportData::getIata).collect(Collectors.toSet());
+
+        List<AirportData> dataList = weatherRepos.getAirportDataList();
+
+        synchronized (dataList) {
+            return weatherRepos.getAirportDataList().parallelStream().map(AirportData::getIata)
+                    .collect(Collectors.toSet());
+        }
     }
 
     @Override

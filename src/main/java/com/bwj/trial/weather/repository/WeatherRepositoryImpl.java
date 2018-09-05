@@ -12,8 +12,10 @@ public class WeatherRepositoryImpl implements WeatherRepository {
 
     @Override
     public AirportData getAirportData(String iataCode) {
-        return MemoryOperator.INSTANCE.getAirportData().parallelStream().filter(ap -> ap.getIata().equals(iataCode))
-                .findFirst().orElse(null);
+        synchronized (MemoryOperator.INSTANCE.getAirportData()) {
+            return MemoryOperator.INSTANCE.getAirportData().parallelStream().filter(ap -> ap.getIata().equals(iataCode))
+                   .findFirst().orElse(null);
+        }
     }
 
     @Override
@@ -57,42 +59,44 @@ public class WeatherRepositoryImpl implements WeatherRepository {
 
         DataPointType dataPointType = DataPointType.valueOf(pointType.toUpperCase());
         switch (dataPointType) {
-            case WIND:
-                if (dp.getMean() >= 0) {
-                    ai.setWind(dp);
-                }
-                break;
-            case TEMPERATURE:
-                if (dp.getMean() >= -50 && dp.getMean() < 100) {
-                    ai.setTemperature(dp);
-                }
-                break;
-            case HUMIDTY:
-                if (dp.getMean() >= 0 && dp.getMean() < 100) {
-                    ai.setHumidity(dp);
-                }
-                break;
-            case PRESSURE:
-                if (dp.getMean() >= 650 && dp.getMean() < 800) {
-                    ai.setPressure(dp);
-                }
-                break;
-            case CLOUDCOVER:
-                if (dp.getMean() >= 0 && dp.getMean() < 100) {
-                    ai.setCloudCover(dp);
-                }
-                break;
-            case PRECIPITATION:
-                if (dp.getMean() >= 0 && dp.getMean() < 100) {
-                    ai.setPrecipitation(dp);
-                }
-                break;
+        case WIND:
+            if (dp.getMean() >= 0) {
+                ai.setWind(dp);
+            }
+            break;
+        case TEMPERATURE:
+            if (dp.getMean() >= -50 && dp.getMean() < 100) {
+                ai.setTemperature(dp);
+            }
+            break;
+        case HUMIDTY:
+            if (dp.getMean() >= 0 && dp.getMean() < 100) {
+                ai.setHumidity(dp);
+            }
+            break;
+        case PRESSURE:
+            if (dp.getMean() >= 650 && dp.getMean() < 800) {
+                ai.setPressure(dp);
+            }
+            break;
+        case CLOUDCOVER:
+            if (dp.getMean() >= 0 && dp.getMean() < 100) {
+                ai.setCloudCover(dp);
+            }
+            break;
+        case PRECIPITATION:
+            if (dp.getMean() >= 0 && dp.getMean() < 100) {
+                ai.setPrecipitation(dp);
+            }
+            break;
         }
     }
 
     @Override
     public void addAirport(AirportData airportData) {
-        MemoryOperator.INSTANCE.getAirportData().add(airportData);
+        synchronized (MemoryOperator.INSTANCE.getAirportData()) {
+            MemoryOperator.INSTANCE.getAirportData().add(airportData);
+        }
     }
 
     @Override
@@ -102,10 +106,10 @@ public class WeatherRepositoryImpl implements WeatherRepository {
 
     @Override
     public void deleteAirport(AirportData airportData) {
-
-        MemoryOperator.INSTANCE.getAirportData().remove(airportData);
-        MemoryOperator.INSTANCE.getAtmosphericInformation().remove(airportData.getIata());
-
+        synchronized (MemoryOperator.INSTANCE.getAirportData()) {
+            MemoryOperator.INSTANCE.getAirportData().remove(airportData);
+            MemoryOperator.INSTANCE.getAtmosphericInformation().remove(airportData.getIata());
+        }
     }
 
 }
