@@ -21,7 +21,7 @@ public class WeatherServiceImpl implements WeatherService {
     /**
      * earth radius in KM
      */
-    public static final double EARTH_RADIUS = 6372.8;
+    private static final double EARTH_RADIUS = 6372.8;
 
     private WeatherRepository weatherRepos;
 

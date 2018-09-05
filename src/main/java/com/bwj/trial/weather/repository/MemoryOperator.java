@@ -20,18 +20,18 @@ public enum MemoryOperator {
     /**
      * atmospheric information for each airport, idx corresponds with airportData
      */
-    private ConcurrentHashMap<String, AtmosphericInformation> atmosphericInformation = new ConcurrentHashMap<String, AtmosphericInformation>();
+    private ConcurrentHashMap<String, AtmosphericInformation> atmosphericInformation = new ConcurrentHashMap<>();
 
     /**
      * Internal performance counter to better understand most requested information,
      * this map can be improved but for now provides the basis for future
      * performance optimizations. Due to the stateless deployment architecture we
      * don't want to write this to disk, but will pull it off using a REST request
-     * and aggregate with other performance metrics {@link #ping()}
+     * and aggregate with other performance metrics
      */
-    private ConcurrentHashMap<AirportData, Integer> requestFrequency = new ConcurrentHashMap<AirportData, Integer>();
+    private ConcurrentHashMap<AirportData, Integer> requestFrequency = new ConcurrentHashMap<>();
 
-    private ConcurrentHashMap<Double, Integer> radiusFreq = new ConcurrentHashMap<Double, Integer>();
+    private ConcurrentHashMap<Double, Integer> radiusFreq = new ConcurrentHashMap<>();
 
     public List<AirportData> getAirportData() {
         synchronized (airportData) {

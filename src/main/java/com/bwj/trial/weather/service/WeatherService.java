@@ -51,10 +51,11 @@ public interface WeatherService {
      * Retrieve airport data, including latitude and longitude for a particular
      * airport
      *
-     * @param iata
+     * @param iataCode
      *            the 3 letter airport code
      * @return an HTTP Response with a json representation of {@link AirportData}
      */
+    @SuppressWarnings("JavadocReference")
     Set<String> getIataCodes();
 
     /**

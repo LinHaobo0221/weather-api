@@ -30,14 +30,15 @@ import com.google.gson.Gson;
 @Path("/collect")
 public class RestWeatherCollectorEndpoint implements WeatherCollectorEndpoint {
 
+    @SuppressWarnings("unused")
     public final static Logger LOGGER = Logger.getLogger(RestWeatherCollectorEndpoint.class.getName());
 
     /**
      * shared gson json to object factory
      */
-    public final static Gson gson = new Gson();
+    private final static Gson gson = new Gson();
 
-    final WeatherService weatherService;
+    private final WeatherService weatherService;
 
     @Inject
     public RestWeatherCollectorEndpoint(WeatherService weatherService) {

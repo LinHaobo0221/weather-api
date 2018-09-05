@@ -60,7 +60,7 @@ public enum DataPointType {
     
     private String value;
 
-    private DataPointType(String value) {
+    DataPointType(String value) {
         this.value = value;
     }
 
