@@ -1,7 +1,5 @@
 package com.bwj.trial.weather.endpoint;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
 import com.bwj.trial.weather.model.AirportData;
