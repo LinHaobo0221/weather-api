@@ -58,7 +58,7 @@ public class WeatherServiceImpl implements WeatherService {
                 for (AirportData airportData : dataList) {
                     
                     int index = weatherRepos.getRequestFrequency().getOrDefault(airportData, 0);
-                    double freq = new BigDecimal(index).subtract(new BigDecimal(total)).doubleValue();
+                    double freq = BigDecimal.valueOf(index).subtract(BigDecimal.valueOf(total)).doubleValue();
 
                     freqMap.put(airportData.getIata(), freq);
                 }
@@ -71,7 +71,7 @@ public class WeatherServiceImpl implements WeatherService {
         // hist array
         int[] hist = new int[size];
         for (Map.Entry<Double, Integer> e : weatherRepos.getRadiusFreq().entrySet()) {
-            int i = e.getKey().intValue() % 10;
+            int i = BigDecimal.valueOf(e.getKey().intValue()).scaleByPowerOfTen(-1).intValue();
             hist[i] += e.getValue();
         }
         result.put("radius_freq", hist);
