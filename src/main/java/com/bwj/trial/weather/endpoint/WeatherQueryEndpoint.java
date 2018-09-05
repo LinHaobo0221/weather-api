@@ -1,11 +1,8 @@
 package com.bwj.trial.weather.endpoint;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import com.bwj.trial.weather.model.AtmosphericInformation;
 
 /**
  * The query only API for the Weather Server App. This API is made available to the public internet.

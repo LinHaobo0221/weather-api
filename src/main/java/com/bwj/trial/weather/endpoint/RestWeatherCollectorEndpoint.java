@@ -3,7 +3,13 @@ package com.bwj.trial.weather.endpoint;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import javax.ws.rs.*;
+import javax.inject.Inject;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -30,8 +36,9 @@ public class RestWeatherCollectorEndpoint implements WeatherCollectorEndpoint {
      */
     public final static Gson gson = new Gson();
 
-    private WeatherService weatherService;
+    final WeatherService weatherService;
 
+    @Inject
     public RestWeatherCollectorEndpoint(WeatherService weatherService) {
         super();
         this.weatherService = weatherService;
@@ -48,7 +55,7 @@ public class RestWeatherCollectorEndpoint implements WeatherCollectorEndpoint {
     @Path("/weather/{iata}/{pointType}")
     @Override
     public Response updateWeather(@PathParam("iata") String iataCode, @PathParam("pointType") String pointType,
-                                  String datapointJson) {
+            String datapointJson) {
         try {
             if (iataCode == null || "".equals(iataCode)) {
                 return Response.status(Response.Status.BAD_REQUEST).build();
@@ -87,13 +94,15 @@ public class RestWeatherCollectorEndpoint implements WeatherCollectorEndpoint {
     @POST
     @Path("/airport/{iata}/{lat}/{long}")
     @Override
-    public Response addAirport(@PathParam("iata") String iata, @PathParam("lat") String latString, @PathParam("long") String longString) {
+    public Response addAirport(@PathParam("iata") String iata, @PathParam("lat") String latString,
+            @PathParam("long") String longString) {
 
         if (iata == null || latString == null || longString == null) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
-        AirportData airportData = weatherService.addAirport(iata, Double.valueOf(latString), Double.valueOf(longString));
+        AirportData airportData = weatherService.addAirport(iata, Double.valueOf(latString),
+                Double.valueOf(longString));
         if (airportData == null) {
             return Response.status(Response.Status.OK).build();
         }

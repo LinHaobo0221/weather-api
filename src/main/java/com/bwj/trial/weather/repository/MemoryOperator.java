@@ -8,7 +8,7 @@ import java.util.Map;
 import com.bwj.trial.weather.model.AirportData;
 import com.bwj.trial.weather.model.AtmosphericInformation;
 
-public enum MemoryStorage {
+public enum MemoryOperator {
 
     INSTANCE;
 

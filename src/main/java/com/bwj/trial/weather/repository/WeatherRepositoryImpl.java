@@ -12,7 +12,7 @@ public class WeatherRepositoryImpl implements WeatherRepository {
 
     @Override
     public AirportData getAirportData(String iataCode) {
-        return MemoryStorage.INSTANCE.getAirportData().parallelStream().filter(ap -> ap.getIata().equals(iataCode))
+        return MemoryOperator.INSTANCE.getAirportData().parallelStream().filter(ap -> ap.getIata().equals(iataCode))
                 .findFirst().orElse(null);
     }
 
@@ -20,16 +20,16 @@ public class WeatherRepositoryImpl implements WeatherRepository {
     public void updateRequestFrequency(String iata, Double radius) {
         AirportData airportData = getAirportData(iata);
 
-        Map<AirportData, Integer> map = MemoryStorage.INSTANCE.getRequestFrequency();
+        Map<AirportData, Integer> map = MemoryOperator.INSTANCE.getRequestFrequency();
         map.put(airportData, map.getOrDefault(airportData, 0) + 1);
 
-        Map<Double, Integer> freqMap = MemoryStorage.INSTANCE.getRadiusFreq();
+        Map<Double, Integer> freqMap = MemoryOperator.INSTANCE.getRadiusFreq();
         freqMap.put(radius, freqMap.getOrDefault(radius, 0));
     }
 
     @Override
     public Map<String, AtmosphericInformation> getAtmosphericInformations() {
-        return MemoryStorage.INSTANCE.getAtmosphericInformation();
+        return MemoryOperator.INSTANCE.getAtmosphericInformation();
     }
 
     @Override
@@ -39,17 +39,17 @@ public class WeatherRepositoryImpl implements WeatherRepository {
 
     @Override
     public List<AirportData> getAirportDataList() {
-        return MemoryStorage.INSTANCE.getAirportData();
+        return MemoryOperator.INSTANCE.getAirportData();
     }
 
     @Override
     public Map<AirportData, Integer> getRequestFrequency() {
-        return MemoryStorage.INSTANCE.getRequestFrequency();
+        return MemoryOperator.INSTANCE.getRequestFrequency();
     }
 
     @Override
     public Map<Double, Integer> getRadiusFreq() {
-        return MemoryStorage.INSTANCE.getRadiusFreq();
+        return MemoryOperator.INSTANCE.getRadiusFreq();
     }
 
     @Override
@@ -92,19 +92,19 @@ public class WeatherRepositoryImpl implements WeatherRepository {
 
     @Override
     public void addAirport(AirportData airportData) {
-        MemoryStorage.INSTANCE.getAirportData().add(airportData);
+        MemoryOperator.INSTANCE.getAirportData().add(airportData);
     }
 
     @Override
     public void addAtmosphericInformation(String iata, AtmosphericInformation atmosphericInformation) {
-        MemoryStorage.INSTANCE.getAtmosphericInformation().put(iata, atmosphericInformation);
+        MemoryOperator.INSTANCE.getAtmosphericInformation().put(iata, atmosphericInformation);
     }
 
     @Override
     public void deleteAirport(AirportData airportData) {
 
-        MemoryStorage.INSTANCE.getAirportData().remove(airportData);
-        MemoryStorage.INSTANCE.getAtmosphericInformation().remove(airportData.getIata());
+        MemoryOperator.INSTANCE.getAirportData().remove(airportData);
+        MemoryOperator.INSTANCE.getAtmosphericInformation().remove(airportData.getIata());
 
     }
 

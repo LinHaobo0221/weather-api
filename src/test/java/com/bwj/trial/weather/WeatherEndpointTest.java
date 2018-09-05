@@ -14,7 +14,7 @@ import com.bwj.trial.weather.endpoint.WeatherQueryEndpoint;
 import com.bwj.trial.weather.model.AirportData;
 import com.bwj.trial.weather.model.AtmosphericInformation;
 import com.bwj.trial.weather.model.DataPoint;
-import com.bwj.trial.weather.repository.MemoryStorage;
+import com.bwj.trial.weather.repository.MemoryOperator;
 import com.bwj.trial.weather.repository.WeatherRepository;
 import com.bwj.trial.weather.repository.WeatherRepositoryImpl;
 import com.bwj.trial.weather.service.WeatherService;
@@ -42,19 +42,19 @@ public class WeatherEndpointTest {
 		_query = new RestWeatherQueryEndpoint(WeatherService);
 		_update = new RestWeatherCollectorEndpoint(WeatherService);
 
-		MemoryStorage.INSTANCE.getAirportData().clear();
-		MemoryStorage.INSTANCE.getAtmosphericInformation().clear();
+		MemoryOperator.INSTANCE.getAirportData().clear();
+		MemoryOperator.INSTANCE.getAtmosphericInformation().clear();
 
-		MemoryStorage.INSTANCE.getAirportData()
+		MemoryOperator.INSTANCE.getAirportData()
 				.add(new AirportData("BOS", 42.364347, -71.005181));
-		MemoryStorage.INSTANCE.getAirportData()
+		MemoryOperator.INSTANCE.getAirportData()
 				.add(new AirportData("EWR", 40.6925, -71.005181));
-		MemoryStorage.INSTANCE.getAirportData()
+		MemoryOperator.INSTANCE.getAirportData()
 				.add(new AirportData("JFK", 40.639751, -73.778925));
 
-		MemoryStorage.INSTANCE.getAtmosphericInformation().put("BOS", new AtmosphericInformation());
-		MemoryStorage.INSTANCE.getAtmosphericInformation().put("EWR", new AtmosphericInformation());
-		MemoryStorage.INSTANCE.getAtmosphericInformation().put("JFK", new AtmosphericInformation());
+		MemoryOperator.INSTANCE.getAtmosphericInformation().put("BOS", new AtmosphericInformation());
+		MemoryOperator.INSTANCE.getAtmosphericInformation().put("EWR", new AtmosphericInformation());
+		MemoryOperator.INSTANCE.getAtmosphericInformation().put("JFK", new AtmosphericInformation());
 
 		_dp = new DataPoint.Builder().withCount(10).withFirst(10).withMedian(20).withLast(30).withMean(22).build();
 		_update.updateWeather("BOS", "wind", _gson.toJson(_dp));

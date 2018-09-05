@@ -12,16 +12,21 @@ import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.grizzly.http.server.HttpServerFilter;
 import org.glassfish.grizzly.http.server.HttpServerProbe;
 import org.glassfish.grizzly.http.server.Request;
+import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 
 import com.bwj.trial.weather.endpoint.RestWeatherCollectorEndpoint;
 import com.bwj.trial.weather.endpoint.RestWeatherQueryEndpoint;
-
+import com.bwj.trial.weather.repository.WeatherRepository;
+import com.bwj.trial.weather.repository.WeatherRepositoryImpl;
+import com.bwj.trial.weather.service.WeatherService;
+import com.bwj.trial.weather.service.WeatherServiceImpl;
 
 /**
- * This main method will be use by the automated functional grader. You shouldn't move this class or remove the
- * main method. You may change the implementation, but we encourage caution.
+ * This main method will be use by the automated functional grader. You
+ * shouldn't move this class or remove the main method. You may change the
+ * implementation, but we encourage caution.
  *
  * @author code test administrator
  */
@@ -36,6 +41,13 @@ public class WeatherServer {
             final ResourceConfig resourceConfig = new ResourceConfig();
             resourceConfig.register(RestWeatherCollectorEndpoint.class);
             resourceConfig.register(RestWeatherQueryEndpoint.class);
+            resourceConfig.register(new AbstractBinder() {
+                @Override
+                protected void configure() {
+                    bind(WeatherServiceImpl.class).to(WeatherService.class);
+                    bind(WeatherRepositoryImpl.class).to(WeatherRepository.class);
+                }
+            });
 
             HttpServer server = GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URL), resourceConfig, false);
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -43,14 +55,15 @@ public class WeatherServer {
             }));
 
             HttpServerProbe probe = new HttpServerProbe.Adapter() {
-                public void onRequestReceiveEvent(HttpServerFilter filter, @SuppressWarnings("rawtypes") Connection connection, Request request) {
+                public void onRequestReceiveEvent(HttpServerFilter filter,
+                        @SuppressWarnings("rawtypes") Connection connection, Request request) {
                     System.out.println(request.getRequestURI());
                 }
             };
             server.getServerConfiguration().getMonitoringConfig().getWebServerConfig().addProbes(probe);
 
-
-            // the autograder waits for this output before running automated tests, please don't remove it
+            // the autograder waits for this output before running automated tests, please
+            // don't remove it
             server.start();
             System.out.println(format("Weather Server started.\n url=%s\n", BASE_URL));
 

@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.inject.Inject;
+
 import com.bwj.trial.weather.WeatherException;
 import com.bwj.trial.weather.model.AirportData;
 import com.bwj.trial.weather.model.AtmosphericInformation;
@@ -22,6 +24,7 @@ public class WeatherServiceImpl implements WeatherService {
 
     private WeatherRepository weatherRepos;
 
+    @Inject
     public WeatherServiceImpl(WeatherRepository weatherRepository) {
         super();
         this.weatherRepos = weatherRepository;
@@ -35,8 +38,8 @@ public class WeatherServiceImpl implements WeatherService {
         Map<String, AtmosphericInformation> allInformation = weatherRepos.getAtmosphericInformations();
 
         // datasize
-        long datasize = allInformation.keySet().parallelStream()
-                .map(iata -> allInformation.get(iata)).filter(item -> item.isValidate())
+        long datasize = allInformation.keySet().parallelStream().map(iata -> allInformation.get(iata))
+                .filter(item -> item.isValidate())
                 .filter(item -> item.getLastUpdateTime() > System.currentTimeMillis() - 86400000).count();
 
         result.put("datasize", datasize);
@@ -48,8 +51,7 @@ public class WeatherServiceImpl implements WeatherService {
 
         for (AirportData airportData : weatherRepos.getAirportDataList()) {
 
-            double freq = (double) weatherRepos.getRequestFrequency().getOrDefault(airportData, 0)
-                    / total;
+            double freq = (double) weatherRepos.getRequestFrequency().getOrDefault(airportData, 0) / total;
 
             freqMap.put(airportData.getIata(), freq);
         }
@@ -90,7 +92,8 @@ public class WeatherServiceImpl implements WeatherService {
 
                 if (this.calculateDistance(ad, airportData) <= radius) {
 
-                    AtmosphericInformation atmosphericInformation = weatherRepos.getAtmosphericInformation(airportData.getIata());
+                    AtmosphericInformation atmosphericInformation = weatherRepos
+                            .getAtmosphericInformation(airportData.getIata());
 
                     if (atmosphericInformation.isValidate()) {
                         result.add(atmosphericInformation);
@@ -155,7 +158,6 @@ public class WeatherServiceImpl implements WeatherService {
 
         return true;
     }
-
 
     private double calculateDistance(AirportData dataOne, AirportData dataTwo) {
 

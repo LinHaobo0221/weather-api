@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -32,11 +33,11 @@ public class RestWeatherQueryEndpoint implements WeatherQueryEndpoint {
      */
     public static final Gson gson = new Gson();
 
+    final WeatherService weatherService;
 
-    private WeatherService weatherService;
-
-
+    @Inject
     public RestWeatherQueryEndpoint(WeatherService weatherService) {
+        super();
         this.weatherService = weatherService;
     }
 
@@ -61,8 +62,10 @@ public class RestWeatherQueryEndpoint implements WeatherQueryEndpoint {
      * requested airport information and return a list of matching atmosphere
      * information.
      *
-     * @param iata         the iataCode
-     * @param radiusString the radius in km
+     * @param iata
+     *            the iataCode
+     * @param radiusString
+     *            the radius in km
      * @return a list of atmospheric information
      */
     @GET
