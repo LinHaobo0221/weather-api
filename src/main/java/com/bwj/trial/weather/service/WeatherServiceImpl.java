@@ -1,20 +1,14 @@
 package com.bwj.trial.weather.service;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.inject.Inject;
-
-import com.bwj.trial.weather.WeatherException;
 import com.bwj.trial.weather.model.AirportData;
 import com.bwj.trial.weather.model.AtmosphericInformation;
 import com.bwj.trial.weather.model.DataPoint;
 import com.bwj.trial.weather.repository.WeatherRepository;
+
+import javax.inject.Inject;
+import java.math.BigDecimal;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class WeatherServiceImpl implements WeatherService {
 
@@ -32,15 +26,15 @@ public class WeatherServiceImpl implements WeatherService {
     }
 
     @Override
-    public Map<String, Object> getPingResult() {
+    public synchronized Map<String, Object> getPingResult() {
 
-        Map<String, Object> result = new HashMap<String, Object>();
+        Map<String, Object> result = new HashMap<>();
 
         Map<String, AtmosphericInformation> allInformation = weatherRepos.getAtmosphericInformations();
 
         // datasize
-        long datasize = allInformation.keySet().parallelStream().map(iata -> allInformation.get(iata))
-                .filter(item -> item.isValidate())
+        long datasize = allInformation.keySet().parallelStream().map(allInformation::get)
+                .filter(AtmosphericInformation::isValidate)
                 .filter(item -> item.getLastUpdateTime() > System.currentTimeMillis() - 86400000).count();
 
         result.put("datasize", datasize);
@@ -53,15 +47,13 @@ public class WeatherServiceImpl implements WeatherService {
             result.put("iata_freq", freqMap);
         } else {
             List<AirportData> dataList = weatherRepos.getAirportDataList();
-            
-            synchronized (dataList) {
-                for (AirportData airportData : dataList) {
-                    
-                    int index = weatherRepos.getRequestFrequency().getOrDefault(airportData, 0);
-                    double freq = BigDecimal.valueOf(index).subtract(BigDecimal.valueOf(total)).doubleValue();
 
-                    freqMap.put(airportData.getIata(), freq);
-                }
+            for (AirportData airportData : dataList) {
+
+                int index = weatherRepos.getRequestFrequency().getOrDefault(airportData, 0);
+                double freq = BigDecimal.valueOf(index).subtract(BigDecimal.valueOf(total)).doubleValue();
+
+                freqMap.put(airportData.getIata(), freq);
             }
             result.put("iata_freq", freqMap);
         }
@@ -80,7 +72,7 @@ public class WeatherServiceImpl implements WeatherService {
     }
 
     @Override
-    public List<AtmosphericInformation> getWetherList(String iata, String radiusParam) {
+    public synchronized List<AtmosphericInformation> getWetherList(String iata, String radiusParam) {
 
         double radius = radiusParam == null || radiusParam.trim().isEmpty() ? 0
                 : new BigDecimal(radiusParam).doubleValue();
@@ -96,27 +88,24 @@ public class WeatherServiceImpl implements WeatherService {
 
             AirportData ad = weatherRepos.getAirportData(iata);
 
-            List<AirportData> airportDataList = weatherRepos.getAirportDataList();
+            for (AirportData airportData : weatherRepos.getAirportDataList()) {
 
-            synchronized (airportDataList) {
-                for (AirportData airportData : airportDataList) {
+                if (this.calculateDistance(ad, airportData) <= radius) {
 
-                    if (this.calculateDistance(ad, airportData) <= radius) {
+                    AtmosphericInformation atmosphericInformation = weatherRepos.getAtmosphericInformation(airportData.getIata());
 
-                        AtmosphericInformation atmosphericInformation = weatherRepos.getAtmosphericInformation(airportData.getIata());
-
-                        if (atmosphericInformation.isValidate()) {
-                            result.add(atmosphericInformation);
-                        }
+                    if (atmosphericInformation.isValidate()) {
+                        result.add(atmosphericInformation);
                     }
                 }
             }
         }
+
         return result;
     }
 
     @Override
-    public boolean addDataPoint(String iataCode, String pointType, DataPoint dp) throws WeatherException {
+    public boolean addDataPoint(String iataCode, String pointType, DataPoint dp) {
 
         AtmosphericInformation ai = weatherRepos.getAtmosphericInformation(iataCode);
 
@@ -125,14 +114,9 @@ public class WeatherServiceImpl implements WeatherService {
     }
 
     @Override
-    public Set<String> getIataCodes() {
-
-        List<AirportData> dataList = weatherRepos.getAirportDataList();
-
-        synchronized (dataList) {
-            return weatherRepos.getAirportDataList().parallelStream().map(AirportData::getIata)
-                    .collect(Collectors.toSet());
-        }
+    public synchronized Set<String> getIataCodes() {
+        return weatherRepos.getAirportDataList().parallelStream().map(AirportData::getIata)
+                .collect(Collectors.toSet());
     }
 
     @Override
