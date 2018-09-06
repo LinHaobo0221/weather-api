@@ -60,15 +60,15 @@ public class RestWeatherCollectorEndpoint implements WeatherCollectorEndpoint {
             }
 
             boolean result = weatherService.addDataPoint(iataCode, pointType,gson.fromJson(datapointJson, DataPoint.class));
-            if (!result) {
-                return Response.status(Response.Status.BAD_REQUEST).build();
-            }
+            
+            Status status = result ? Response.Status.OK : Response.Status.BAD_REQUEST;
+            
+            return Response.status(status).build();
 
         } catch (WeatherException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
         
-        return Response.status(Response.Status.OK).build();
     }
 
     @GET
