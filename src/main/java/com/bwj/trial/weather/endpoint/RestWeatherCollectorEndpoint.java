@@ -1,7 +1,6 @@
 package com.bwj.trial.weather.endpoint;
 
 import java.util.Set;
-import java.util.logging.Logger;
 
 import javax.inject.Inject;
 import javax.ws.rs.DELETE;
@@ -29,9 +28,6 @@ import com.google.gson.Gson;
 
 @Path("/collect")
 public class RestWeatherCollectorEndpoint implements WeatherCollectorEndpoint {
-
-    @SuppressWarnings("unused")
-    public final static Logger LOGGER = Logger.getLogger(RestWeatherCollectorEndpoint.class.getName());
 
     /**
      * shared gson json to object factory

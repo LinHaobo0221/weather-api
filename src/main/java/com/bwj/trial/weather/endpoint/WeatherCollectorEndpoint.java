@@ -63,6 +63,5 @@ public interface WeatherCollectorEndpoint {
      */
     Response deleteAirport(String iata);
 
-    @SuppressWarnings("unused")
     Response exit();
 }

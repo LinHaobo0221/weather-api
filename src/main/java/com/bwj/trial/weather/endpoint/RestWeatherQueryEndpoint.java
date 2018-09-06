@@ -2,7 +2,6 @@ package com.bwj.trial.weather.endpoint;
 
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -25,9 +24,6 @@ import com.google.gson.Gson;
  */
 @Path("/query")
 public class RestWeatherQueryEndpoint implements WeatherQueryEndpoint {
-
-    @SuppressWarnings("unused")
-    public final static Logger LOGGER = Logger.getLogger(RestWeatherQueryEndpoint.class.getName());
 
     /**
      * shared gson json to object factory

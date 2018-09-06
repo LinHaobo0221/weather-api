@@ -55,7 +55,6 @@ public interface WeatherService {
      *            the 3 letter airport code
      * @return an HTTP Response with a json representation of {@link AirportData}
      */
-    @SuppressWarnings("JavadocReference")
     Set<String> getIataCodes();
 
     /**
