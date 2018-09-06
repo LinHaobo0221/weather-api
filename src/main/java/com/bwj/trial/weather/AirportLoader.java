@@ -41,8 +41,10 @@ public class AirportLoader {
     public void upload(BufferedReader reader) throws IOException {
 
         reader.lines().map(line -> Arrays.asList(line.split(SEPARATOR))).forEach(line -> {
-            String requestUrl = line.get(4).replaceAll("\"", "") + "/" + line.get(6) + "/" + line.get(7);
-            collect.path(requestUrl).request().post(Entity.entity("", MediaType.APPLICATION_JSON));
+            collect.path(line.get(4).replaceAll("\"", ""))
+            .path(line.get(6))
+            .path(line.get(7))
+            .request().post(Entity.entity("", MediaType.APPLICATION_JSON));
         });
 
         reader.close();
