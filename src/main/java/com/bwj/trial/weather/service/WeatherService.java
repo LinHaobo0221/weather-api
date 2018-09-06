@@ -8,7 +8,7 @@ import com.bwj.trial.weather.WeatherException;
 import com.bwj.trial.weather.model.AirportData;
 import com.bwj.trial.weather.model.AtmosphericInformation;
 import com.bwj.trial.weather.model.DataPoint;
-import com.bwj.trial.weather.model.DataPointType;
+import com.bwj.trial.weather.repository.DataPointType;
 
 public interface WeatherService {
 

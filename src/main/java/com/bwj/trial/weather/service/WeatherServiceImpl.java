@@ -51,17 +51,22 @@ public class WeatherServiceImpl implements WeatherService {
             for (AirportData airportData : dataList) {
 
                 int index = weatherRepos.getRequestFrequency().getOrDefault(airportData, 0);
-                double freq = BigDecimal.valueOf(index).subtract(BigDecimal.valueOf(total)).doubleValue();
+                double freq = BigDecimal.valueOf(index).divide(BigDecimal.valueOf(total)).doubleValue();
 
                 freqMap.put(airportData.getIata(), freq);
             }
             result.put("iata_freq", freqMap);
         }
 
-        int size = weatherRepos.getRadiusFreq().keySet().stream().max(Double::compare).orElse(1000.0).intValue() + 1;
+        int size = weatherRepos.getRadiusFreq()
+                .keySet()
+                .stream()
+                .max(Double::compare)
+                .orElse(1000.0)
+                .intValue();
 
         // hist array
-        int[] hist = new int[size];
+        int[] hist = new int[size + 1];
         for (Map.Entry<Double, Integer> e : weatherRepos.getRadiusFreq().entrySet()) {
             int i = BigDecimal.valueOf(e.getKey().intValue()).scaleByPowerOfTen(-1).intValue();
             hist[i] += e.getValue();
@@ -115,7 +120,9 @@ public class WeatherServiceImpl implements WeatherService {
 
     @Override
     public synchronized Set<String> getIataCodes() {
-        return weatherRepos.getAirportDataList().parallelStream().map(AirportData::getIata)
+        return weatherRepos.getAirportDataList()
+                .parallelStream()
+                .map(AirportData::getIata)
                 .collect(Collectors.toSet());
     }
 

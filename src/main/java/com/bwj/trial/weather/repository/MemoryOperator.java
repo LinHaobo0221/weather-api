@@ -15,12 +15,12 @@ public enum MemoryOperator {
     /**
      * all known airports
      */
-    private volatile List<AirportData> airportData = Collections.synchronizedList(new ArrayList<>());
+    private final List<AirportData> airportData = Collections.synchronizedList(new ArrayList<>());
 
     /**
      * atmospheric information for each airport, idx corresponds with airportData
      */
-    private ConcurrentHashMap<String, AtmosphericInformation> atmosphericInformation = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, AtmosphericInformation> atmosphericInformation = new ConcurrentHashMap<>();
 
     /**
      * Internal performance counter to better understand most requested information,
@@ -29,12 +29,14 @@ public enum MemoryOperator {
      * don't want to write this to disk, but will pull it off using a REST request
      * and aggregate with other performance metrics
      */
-    private ConcurrentHashMap<AirportData, Integer> requestFrequency = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<AirportData, Integer> requestFrequency = new ConcurrentHashMap<>();
 
-    private ConcurrentHashMap<Double, Integer> radiusFreq = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Double, Integer> radiusFreq = new ConcurrentHashMap<>();
 
-    public synchronized List<AirportData> getAirportData() {
-        return airportData;
+    public  List<AirportData> getAirportData() {
+        synchronized(airportData) {
+            return airportData;
+        }
     }
 
     public ConcurrentHashMap<String, AtmosphericInformation> getAtmosphericInformation() {
@@ -47,6 +49,27 @@ public enum MemoryOperator {
 
     public ConcurrentHashMap<Double, Integer> getRadiusFreq() {
         return radiusFreq;
+    }
+    
+    public void addAirportData(AirportData ad) {
+        synchronized (airportData) {
+            airportData.add(ad);
+        }
+    }
+    
+    public void addAtmosphericInformation(String iata, AtmosphericInformation ai) {
+        synchronized (atmosphericInformation) {
+            if(!atmosphericInformation.containsKey(iata)) {
+                atmosphericInformation.put(iata, ai);
+            }
+        }
+    }
+    
+    public void removeAirport(AirportData ad) {
+        synchronized (airportData) {
+            getAirportData().remove(ad);
+            getAtmosphericInformation().remove(ad.getIata());
+        }
     }
 
 }

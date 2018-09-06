@@ -1,7 +1,10 @@
-package com.bwj.trial.weather.model;
+package com.bwj.trial.weather.repository;
 
 import java.util.Arrays;
 import java.util.List;
+
+import com.bwj.trial.weather.model.AtmosphericInformation;
+import com.bwj.trial.weather.model.DataPoint;
 
 /**
  * The various types of data points we can collect.

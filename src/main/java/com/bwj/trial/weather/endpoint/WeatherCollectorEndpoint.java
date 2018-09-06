@@ -3,7 +3,7 @@ package com.bwj.trial.weather.endpoint;
 import javax.ws.rs.core.Response;
 
 import com.bwj.trial.weather.model.AirportData;
-import com.bwj.trial.weather.model.DataPointType;
+import com.bwj.trial.weather.repository.DataPointType;
 
 /**
  * The interface shared to airport weather collection systems.
