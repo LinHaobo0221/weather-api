@@ -59,9 +59,7 @@ public enum MemoryOperator {
     
     public void addAtmosphericInformation(String iata, AtmosphericInformation ai) {
         synchronized (atmosphericInformation) {
-            if(!atmosphericInformation.containsKey(iata)) {
-                atmosphericInformation.put(iata, ai);
-            }
+            atmosphericInformation.put(iata, ai);
         }
     }
     
