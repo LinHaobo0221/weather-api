@@ -71,5 +71,19 @@ public enum MemoryOperator {
             getAtmosphericInformation().remove(ad.getIata());
         }
     }
+    
+    public void updateRequestFrequency(AirportData ad) {
+        synchronized (requestFrequency) {
+            int index = requestFrequency.getOrDefault(airportData, 0) + 1;
+            requestFrequency.put(ad, index);
+        }
+    }
+    
+    public void updateRadiusFreq(Double radius) {
+        synchronized (radiusFreq) {
+            int index = radiusFreq.getOrDefault(radius, 0);
+            radiusFreq.put(radius, index);
+        }
+    }
 
 }

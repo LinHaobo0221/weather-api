@@ -19,11 +19,8 @@ public class WeatherRepositoryImpl implements WeatherRepository {
     public void updateRequestFrequency(String iata, Double radius) {
         AirportData airportData = getAirportData(iata);
 
-        Map<AirportData, Integer> map = MemoryOperator.INSTANCE.getRequestFrequency();
-        map.put(airportData, map.getOrDefault(airportData, 0) + 1);
-
-        Map<Double, Integer> freqMap = MemoryOperator.INSTANCE.getRadiusFreq();
-        freqMap.put(radius, freqMap.getOrDefault(radius, 0));
+        MemoryOperator.INSTANCE.updateRequestFrequency(airportData);
+        MemoryOperator.INSTANCE.updateRadiusFreq(radius);
     }
 
     @Override
