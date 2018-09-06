@@ -34,7 +34,7 @@ public class WeatherServiceImpl implements WeatherService {
 
         // datasize
         long datasize = allInformation.keySet().parallelStream().map(allInformation::get)
-                .filter(AtmosphericInformation::isValidate)
+                .filter(AtmosphericInformation::checkValidate)
                 .filter(item -> item.getLastUpdateTime() > System.currentTimeMillis() - 86400000).count();
 
         result.put("datasize", datasize);
@@ -99,7 +99,7 @@ public class WeatherServiceImpl implements WeatherService {
 
                     AtmosphericInformation atmosphericInformation = weatherRepos.getAtmosphericInformation(airportData.getIata());
 
-                    if (atmosphericInformation.isValidate()) {
+                    if (atmosphericInformation.checkValidate()) {
                         result.add(atmosphericInformation);
                     }
                 }

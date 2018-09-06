@@ -100,7 +100,7 @@ public class AtmosphericInformation {
         this.lastUpdateTime = lastUpdateTime;
     }
 
-    public boolean isValidate() {
+    public boolean checkValidate() {
         return this.getCloudCover() != null ||
                 this.getHumidity() != null ||
                 this.getPrecipitation() != null ||

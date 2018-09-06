@@ -35,7 +35,7 @@ public class AirportLoader {
     public AirportLoader() {
         Client client = ClientBuilder.newClient();
 
-        collect = client.target("http://localhost:9090/collect");
+        collect = client.target("http://localhost:9090/collect/airport/");
     }
 
     public void upload(BufferedReader reader) throws IOException {
