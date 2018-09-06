@@ -11,16 +11,17 @@ import com.bwj.trial.weather.model.AtmosphericInformation;
 public enum MemoryOperator {
 
     INSTANCE;
-
+    
+    
     /**
      * all known airports
      */
-    private final List<AirportData> airportData = Collections.synchronizedList(new ArrayList<>());
+    private final List<AirportData> airportData;
 
     /**
      * atmospheric information for each airport, idx corresponds with airportData
      */
-    private final ConcurrentHashMap<String, AtmosphericInformation> atmosphericInformation = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, AtmosphericInformation> atmosphericInformation;
 
     /**
      * Internal performance counter to better understand most requested information,
@@ -29,9 +30,16 @@ public enum MemoryOperator {
      * don't want to write this to disk, but will pull it off using a REST request
      * and aggregate with other performance metrics
      */
-    private final ConcurrentHashMap<AirportData, Integer> requestFrequency = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<AirportData, Integer> requestFrequency;
 
-    private final ConcurrentHashMap<Double, Integer> radiusFreq = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Double, Integer> radiusFreq;
+    
+    MemoryOperator() {
+        airportData = Collections.synchronizedList(new ArrayList<>());
+        atmosphericInformation = new ConcurrentHashMap<>();
+        requestFrequency = new ConcurrentHashMap<>();
+        radiusFreq = new ConcurrentHashMap<>();
+    }
 
     public  List<AirportData> getAirportData() {
         return airportData;
